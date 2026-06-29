@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Patty</title>
+
+<!--
+  ┌─────────────────────────────────────────────────────────────┐
+  │  EDIT THESE — everything you need to change is in one place. │
+  └─────────────────────────────────────────────────────────────┘
+  1. <title> above  → your name
+  2. NAME, TAGLINE, BIO below (search for "EDIT:")
+  3. The three endpoint links (href + text)
+  4. SINCE date in the <script> at the bottom (your "uptime" start)
+  Then drop this file in a repo named  <yourusername>.github.io
+  as  index.html  → live at  https://<yourusername>.github.io
+-->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --ink:#14161D;
+    --raised:#1B1E27;
+    --line:#2A2E3A;
+    --text:#E6E8EE;
+    --muted:#868D9E;
+    --signal:#E8A33D;   /* action / hover  */
+    --up:#4ADE80;       /* live status only */
+    --mono:'IBM Plex Mono', ui-monospace, monospace;
+    --disp:'Space Grotesk', system-ui, sans-serif;
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+
+  body{
+    background:var(--ink);
+    color:var(--text);
+    font-family:var(--mono);
+    min-height:100dvh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:28px 20px;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  .card{
+    width:100%;
+    max-width:440px;
+    opacity:0;
+    animation:rise .6s cubic-bezier(.2,.7,.2,1) forwards;
+  }
+
+  /* ── status eyebrow ── */
+  .status{
+    display:flex;
+    align-items:center;
+    gap:9px;
+    font-size:12px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--muted);
+    margin-bottom:26px;
+  }
+  .dot{
+    width:8px;height:8px;border-radius:50%;
+    background:var(--up);
+    box-shadow:0 0 0 0 rgba(74,222,128,.55);
+    animation:pulse 2.6s ease-out infinite;
+  }
+  .status .sep{opacity:.4}
+  .uptime{color:var(--text);font-variant-numeric:tabular-nums}
+
+  /* ── identity ── */
+  .name{
+    font-family:var(--disp);
+    font-weight:700;
+    font-size:clamp(38px,12vw,54px);
+    letter-spacing:-.02em;
+    line-height:1;
+  }
+  .tagline{
+    font-family:var(--disp);
+    font-weight:500;
+    font-size:18px;
+    color:var(--signal);
+    margin-top:10px;
+  }
+  .bio{
+    font-size:13.5px;
+    line-height:1.6;
+    color:var(--muted);
+    margin-top:18px;
+    max-width:36ch;
+  }
+
+  /* ── endpoints ── */
+  .label{
+    font-size:11px;
+    letter-spacing:.22em;
+    text-transform:uppercase;
+    color:var(--muted);
+    margin:34px 0 10px;
+  }
+  .panel{
+    border:1px solid var(--line);
+    border-radius:14px;
+    background:var(--raised);
+    overflow:hidden;
+  }
+  .row{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    padding:16px 18px;
+    text-decoration:none;
+    color:var(--text);
+    border-bottom:1px solid var(--line);
+    transition:background .15s ease;
+  }
+  .row:last-child{border-bottom:none}
+  .arrow{
+    color:var(--muted);
+    transition:transform .15s ease,color .15s ease;
+  }
+  .key{font-size:14.5px;font-weight:500}
+  .val{
+    margin-left:auto;
+    font-size:13px;
+    color:var(--muted);
+  }
+  .row:hover,.row:focus-visible{background:#222632;outline:none}
+  .row:hover .arrow,.row:focus-visible .arrow{
+    color:var(--signal);
+    transform:translateX(3px);
+  }
+  .row:focus-visible{box-shadow:inset 0 0 0 2px var(--signal)}
+
+  .foot{
+    margin-top:26px;
+    font-size:11.5px;
+    letter-spacing:.04em;
+    color:var(--muted);
+    opacity:.7;
+  }
+
+  /* ── motion ── */
+  @keyframes rise{to{opacity:1;transform:none}from{transform:translateY(14px)}}
+  @keyframes pulse{
+    0%{box-shadow:0 0 0 0 rgba(74,222,128,.5)}
+    70%{box-shadow:0 0 0 7px rgba(74,222,128,0)}
+    100%{box-shadow:0 0 0 0 rgba(74,222,128,0)}
+  }
+  @media (prefers-reduced-motion: reduce){
+    .card{animation:none;opacity:1}
+    .dot{animation:none}
+    .arrow,.row{transition:none}
+  }
+</style>
+</head>
+<body>
+  <main class="card">
+    <div class="status">
+      <span class="dot" aria-hidden="true"></span>
+      <span>online</span>
+      <span class="sep">·</span>
+      <span>uptime&nbsp;<span class="uptime" id="uptime">—</span></span>
+    </div>
+
+    <!-- EDIT: your name -->
+    <h1 class="name">Patty</h1>
+    <!-- EDIT: tagline -->
+    <p class="tagline">self-hosted human</p>
+    <!-- EDIT: one-line bio with a bit of voice -->
+    <p class="bio">Runs a homelab in a one-bedroom. Breaks things on purpose, occasionally on accident. Proxmox, Jellyfin, and a Pi-hole that mostly behaves.</p>
+
+    <p class="label">Endpoints</p>
+    <nav class="panel">
+      <!-- EDIT: href + the two text spans on each row -->
+      <a class="row" href="https://github.com/yourusername">
+        <span class="arrow" aria-hidden="true">→</span>
+        <span class="key">github</span>
+        <span class="val">/yourusername</span>
+      </a>
+      <a class="row" href="https://your-portfolio.example">
+        <span class="arrow" aria-hidden="true">→</span>
+        <span class="key">projects</span>
+        <span class="val">what I build</span>
+      </a>
+      <a class="row" href="mailto:you@example.com">
+        <span class="arrow" aria-hidden="true">→</span>
+        <span class="key">email</span>
+        <span class="val">say hi</span>
+      </a>
+    </nav>
+
+    <p class="foot">last deploy · 2026 — built on a tag</p>
+  </main>
+
+<script>
+  // EDIT: your "uptime" start — anything goes (when you got into this, your birthday, whatever)
+  const SINCE = new Date('2017-01-01T00:00:00');
+
+  const el = document.getElementById('uptime');
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function render(){
+    const ms = Date.now() - SINCE.getTime();
+    const s = Math.floor(ms/1000);
+    const y = Math.floor(s/31557600);
+    const d = Math.floor((s%31557600)/86400);
+    const h = Math.floor((s%86400)/3600);
+    const m = Math.floor((s%3600)/60);
+    const sec = s%60;
+    el.textContent = `${y}y ${d}d ${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;
+  }
+  render();
+  if(!reduce) setInterval(render, 1000); // ticks live; frozen if reduced-motion is on
+</script>
+</body>
+</html>

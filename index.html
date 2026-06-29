@@ -3,35 +3,52 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Patty</title>
 
 <!--
-  ┌─────────────────────────────────────────────────────────────┐
-  │  EDIT THESE — everything you need to change is in one place. │
-  └─────────────────────────────────────────────────────────────┘
-  1. <title> above  → your name
-  2. NAME, TAGLINE, BIO below (search for "EDIT:")
-  3. The three endpoint links (href + text)
-  4. SINCE date in the <script> at the bottom (your "uptime" start)
-  Then drop this file in a repo named  <yourusername>.github.io
-  as  index.html  → live at  https://<yourusername>.github.io
+  ┌──────────────────────────────────────────────────────────────┐
+  │  EDIT ZONE — everything personal is reachable from here.       │
+  └──────────────────────────────────────────────────────────────┘
+  1. <title> + the OG/meta block just below (name, description, URL)
+  2. NAME, TAGLINE, BIO in the body (search "EDIT:")
+  3. The endpoint rows — href + the two text spans on each
+  4. The email's data-email="" (the Save-contact card reads from it)
+  No JS edits needed: "Save contact" builds the vCard from what's
+  already on the page (name + email + this URL + github link).
 -->
+
+<title>Patty — self-hosted human</title>
+<meta name="description" content="Developer. Runs a homelab. Reach me here.">
+<meta name="theme-color" content="#13151C">
+
+<!-- Link preview when shared (iMessage, Slack, etc.) -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="Patty — self-hosted human">
+<meta property="og:description" content="Developer. Runs a homelab. Reach me here.">
+<meta property="og:url" content="https://yourusername.github.io">
+<meta name="twitter:card" content="summary">
+<!-- Optional: drop an og.png (1200x630) in the repo and uncomment for a preview image
+<meta property="og:image" content="https://yourusername.github.io/og.png"> -->
+
+<!-- Inline favicon: copper ring + green status dot, no extra file needed -->
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2313151C'/%3E%3Ccircle cx='16' cy='16' r='6' fill='none' stroke='%23E8A33D' stroke-width='2'/%3E%3Ccircle cx='16' cy='16' r='2.4' fill='%234ADE80'/%3E%3C/svg%3E">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 
 <style>
   :root{
-    --ink:#14161D;
-    --raised:#1B1E27;
+    --ink:#13151C;
+    --ink-deep:#0F1116;
+    --raised:#1A1D27;
+    --raised-hi:#232733;
     --line:#2A2E3A;
-    --text:#E6E8EE;
-    --muted:#868D9E;
-    --signal:#E8A33D;   /* action / hover  */
+    --text:#E8EAF0;
+    --muted:#858C9E;
+    --accent:#E8A33D;   /* action / hover */
     --up:#4ADE80;       /* live status only */
     --mono:'IBM Plex Mono', ui-monospace, monospace;
-    --disp:'Space Grotesk', system-ui, sans-serif;
+    --disp:'Bricolage Grotesque', system-ui, sans-serif;
   }
 
   *{box-sizing:border-box;margin:0;padding:0}
@@ -41,115 +58,89 @@
     color:var(--text);
     font-family:var(--mono);
     min-height:100dvh;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    padding:28px 20px;
+    display:flex;align-items:center;justify-content:center;
+    padding:30px 20px;
     -webkit-font-smoothing:antialiased;
   }
 
   .card{
-    width:100%;
-    max-width:440px;
-    opacity:0;
-    animation:rise .6s cubic-bezier(.2,.7,.2,1) forwards;
+    width:100%;max-width:440px;
+    opacity:0;animation:rise .55s cubic-bezier(.2,.7,.2,1) forwards;
   }
 
-  /* ── status eyebrow ── */
+  /* status eyebrow */
   .status{
-    display:flex;
-    align-items:center;
-    gap:9px;
-    font-size:12px;
-    letter-spacing:.14em;
-    text-transform:uppercase;
-    color:var(--muted);
-    margin-bottom:26px;
+    display:flex;align-items:center;gap:9px;
+    font-size:12px;letter-spacing:.13em;text-transform:uppercase;
+    color:var(--muted);margin-bottom:24px;
   }
   .dot{
-    width:8px;height:8px;border-radius:50%;
-    background:var(--up);
-    box-shadow:0 0 0 0 rgba(74,222,128,.55);
-    animation:pulse 2.6s ease-out infinite;
+    width:8px;height:8px;border-radius:50%;background:var(--up);
+    box-shadow:0 0 0 0 rgba(74,222,128,.5);
+    animation:pulse 2.8s ease-out infinite;
   }
   .status .sep{opacity:.4}
-  .uptime{color:var(--text);font-variant-numeric:tabular-nums}
 
-  /* ── identity ── */
+  /* identity */
   .name{
-    font-family:var(--disp);
-    font-weight:700;
-    font-size:clamp(38px,12vw,54px);
-    letter-spacing:-.02em;
-    line-height:1;
+    font-family:var(--disp);font-weight:800;
+    font-size:clamp(40px,12vw,56px);letter-spacing:-.025em;line-height:.98;
   }
   .tagline{
-    font-family:var(--disp);
-    font-weight:500;
-    font-size:18px;
-    color:var(--signal);
-    margin-top:10px;
+    font-family:var(--disp);font-weight:600;font-size:18px;
+    color:var(--accent);margin-top:9px;
   }
   .bio{
-    font-size:13.5px;
-    line-height:1.6;
-    color:var(--muted);
-    margin-top:18px;
-    max-width:36ch;
+    font-size:13.5px;line-height:1.65;color:var(--muted);
+    margin-top:16px;max-width:38ch;
   }
 
-  /* ── endpoints ── */
+  /* primary action: save contact */
+  .save{
+    display:flex;align-items:center;justify-content:center;gap:10px;
+    width:100%;margin-top:24px;padding:15px;
+    font-family:var(--mono);font-size:14.5px;font-weight:600;
+    color:var(--accent);background:transparent;
+    border:1px solid var(--accent);border-radius:13px;cursor:pointer;
+    transition:background .16s ease,color .16s ease,transform .08s ease;
+  }
+  .save:hover{background:var(--accent);color:#1a1305}
+  .save:active{transform:scale(.985)}
+  .save:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+  .save.done{border-color:var(--up);color:var(--up);background:transparent}
+  .save svg{width:16px;height:16px}
+
+  /* endpoints */
   .label{
-    font-size:11px;
-    letter-spacing:.22em;
-    text-transform:uppercase;
-    color:var(--muted);
-    margin:34px 0 10px;
+    font-size:11px;letter-spacing:.22em;text-transform:uppercase;
+    color:var(--muted);margin:30px 0 10px;
   }
   .panel{
-    border:1px solid var(--line);
-    border-radius:14px;
-    background:var(--raised);
-    overflow:hidden;
+    border:1px solid var(--line);border-radius:14px;
+    background:var(--raised);overflow:hidden;
   }
   .row{
-    display:flex;
-    align-items:center;
-    gap:14px;
-    padding:16px 18px;
-    text-decoration:none;
-    color:var(--text);
+    display:flex;align-items:center;gap:14px;
+    padding:16px 18px;text-decoration:none;color:var(--text);
     border-bottom:1px solid var(--line);
-    transition:background .15s ease;
+    transition:background .15s ease;cursor:pointer;
+    width:100%;text-align:left;font-family:var(--mono);font-size:14.5px;background:none;
   }
   .row:last-child{border-bottom:none}
-  .arrow{
-    color:var(--muted);
-    transition:transform .15s ease,color .15s ease;
-  }
-  .key{font-size:14.5px;font-weight:500}
-  .val{
-    margin-left:auto;
-    font-size:13px;
-    color:var(--muted);
-  }
-  .row:hover,.row:focus-visible{background:#222632;outline:none}
-  .row:hover .arrow,.row:focus-visible .arrow{
-    color:var(--signal);
-    transform:translateX(3px);
-  }
-  .row:focus-visible{box-shadow:inset 0 0 0 2px var(--signal)}
+  .arrow{color:var(--muted);transition:transform .15s ease,color .15s ease}
+  .key{font-weight:500}
+  .val{margin-left:auto;font-size:13px;color:var(--muted);transition:color .15s ease}
+  .row:hover,.row:focus-visible{background:var(--raised-hi);outline:none}
+  .row:hover .arrow,.row:focus-visible .arrow{color:var(--accent);transform:translateX(3px)}
+  .row:focus-visible{box-shadow:inset 0 0 0 2px var(--accent)}
+  .row.copied .val{color:var(--up)}
 
   .foot{
-    margin-top:26px;
-    font-size:11.5px;
-    letter-spacing:.04em;
-    color:var(--muted);
-    opacity:.7;
+    margin-top:24px;font-size:11.5px;letter-spacing:.04em;
+    color:var(--muted);opacity:.65;
   }
 
-  /* ── motion ── */
-  @keyframes rise{to{opacity:1;transform:none}from{transform:translateY(14px)}}
+  @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
   @keyframes pulse{
     0%{box-shadow:0 0 0 0 rgba(74,222,128,.5)}
     70%{box-shadow:0 0 0 7px rgba(74,222,128,0)}
@@ -158,7 +149,7 @@
   @media (prefers-reduced-motion: reduce){
     .card{animation:none;opacity:1}
     .dot{animation:none}
-    .arrow,.row{transition:none}
+    .row,.arrow,.save,.val{transition:none}
   }
 </style>
 </head>
@@ -167,59 +158,97 @@
     <div class="status">
       <span class="dot" aria-hidden="true"></span>
       <span>online</span>
-      <span class="sep">·</span>
-      <span>uptime&nbsp;<span class="uptime" id="uptime">—</span></span>
+      <span class="sep">&middot;</span>
+      <!-- EDIT: a soft, true signal -- not a job ad -->
+      <span>open to interesting problems</span>
     </div>
 
-    <!-- EDIT: your name -->
-    <h1 class="name">Patty</h1>
+    <!-- EDIT: your name (the Save button uses this) -->
+    <h1 class="name" id="name">Patty</h1>
     <!-- EDIT: tagline -->
     <p class="tagline">self-hosted human</p>
-    <!-- EDIT: one-line bio with a bit of voice -->
-    <p class="bio">Runs a homelab in a one-bedroom. Breaks things on purpose, occasionally on accident. Proxmox, Jellyfin, and a Pi-hole that mostly behaves.</p>
+    <!-- EDIT: 1-2 lines with some voice -->
+    <p class="bio">I build and run my own infrastructure &mdash; Proxmox, media, DNS, the works. Currently turning NFC tags into things that have no business being this fun.</p>
+
+    <button class="save" id="save" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+      </svg>
+      <span id="save-label">Save contact</span>
+    </button>
 
     <p class="label">Endpoints</p>
     <nav class="panel">
-      <!-- EDIT: href + the two text spans on each row -->
-      <a class="row" href="https://github.com/yourusername">
-        <span class="arrow" aria-hidden="true">→</span>
+      <!-- EDIT each row: href + the two spans. Add or remove rows freely. -->
+      <a class="row" id="gh" href="https://github.com/yourusername">
+        <span class="arrow" aria-hidden="true">&rarr;</span>
         <span class="key">github</span>
         <span class="val">/yourusername</span>
       </a>
       <a class="row" href="https://your-portfolio.example">
-        <span class="arrow" aria-hidden="true">→</span>
+        <span class="arrow" aria-hidden="true">&rarr;</span>
         <span class="key">projects</span>
         <span class="val">what I build</span>
       </a>
-      <a class="row" href="mailto:you@example.com">
-        <span class="arrow" aria-hidden="true">→</span>
-        <span class="key">email</span>
-        <span class="val">say hi</span>
+      <a class="row" href="https://www.linkedin.com/in/yourname">
+        <span class="arrow" aria-hidden="true">&rarr;</span>
+        <span class="key">linkedin</span>
+        <span class="val">/in/yourname</span>
       </a>
+      <!-- email row taps to COPY. EDIT data-email + the value span. -->
+      <button class="row" id="email" type="button" data-email="you@example.com">
+        <span class="arrow" aria-hidden="true">&rarr;</span>
+        <span class="key">email</span>
+        <span class="val">tap to copy</span>
+      </button>
     </nav>
 
-    <p class="foot">last deploy · 2026 — built on a tag</p>
+    <p class="foot">served from github pages &middot; 2026</p>
   </main>
 
 <script>
-  // EDIT: your "uptime" start — anything goes (when you got into this, your birthday, whatever)
-  const SINCE = new Date('2017-01-01T00:00:00');
+  // -- Save contact: builds a vCard from what's already on the page --
+  document.getElementById('save').addEventListener('click', () => {
+    const name = document.getElementById('name').textContent.trim();
+    const email = document.getElementById('email').dataset.email;
+    const gh = document.getElementById('gh').getAttribute('href');
+    const url = window.location.href;
 
-  const el = document.getElementById('uptime');
-  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const vcard = [
+      'BEGIN:VCARD','VERSION:3.0',
+      'FN:' + name,
+      'EMAIL;TYPE=INTERNET:' + email,
+      'URL:' + url,
+      'X-SOCIALPROFILE;TYPE=github:' + gh,
+      'END:VCARD'
+    ].join('\r\n');
 
-  function render(){
-    const ms = Date.now() - SINCE.getTime();
-    const s = Math.floor(ms/1000);
-    const y = Math.floor(s/31557600);
-    const d = Math.floor((s%31557600)/86400);
-    const h = Math.floor((s%86400)/3600);
-    const m = Math.floor((s%3600)/60);
-    const sec = s%60;
-    el.textContent = `${y}y ${d}d ${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;
-  }
-  render();
-  if(!reduce) setInterval(render, 1000); // ticks live; frozen if reduced-motion is on
+    const blob = new Blob([vcard], {type:'text/vcard'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = name.replace(/\s+/g,'-').toLowerCase() + '.vcf';
+    document.body.appendChild(a); a.click(); a.remove();
+
+    const btn = document.getElementById('save');
+    document.getElementById('save-label').textContent = 'Contact ready';
+    btn.classList.add('done');
+    setTimeout(() => {
+      document.getElementById('save-label').textContent = 'Save contact';
+      btn.classList.remove('done');
+    }, 2200);
+  });
+
+  // -- Email: tap to copy with confirmation --
+  document.getElementById('email').addEventListener('click', async () => {
+    const row = document.getElementById('email');
+    const val = row.querySelector('.val');
+    const email = row.dataset.email;
+    try { await navigator.clipboard.writeText(email); }
+    catch { window.location.href = 'mailto:' + email; return; }
+    const original = val.textContent;
+    val.textContent = 'copied'; row.classList.add('copied');
+    setTimeout(() => { val.textContent = original; row.classList.remove('copied'); }, 1600);
+  });
 </script>
 </body>
 </html>

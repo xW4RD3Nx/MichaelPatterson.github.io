@@ -5,250 +5,299 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <!--
-  ┌──────────────────────────────────────────────────────────────┐
-  │  EDIT ZONE — everything personal is reachable from here.       │
-  └──────────────────────────────────────────────────────────────┘
-  1. <title> + the OG/meta block just below (name, description, URL)
-  2. NAME, TAGLINE, BIO in the body (search "EDIT:")
-  3. The endpoint rows — href + the two text spans on each
-  4. The email's data-email="" (the Save-contact card reads from it)
-  No JS edits needed: "Save contact" builds the vCard from what's
-  already on the page (name + email + this URL + github link).
+  EDIT ZONE:
+  - NAME appears twice: the cover splash (.cover-title) and the card (id="name"). Match them.
+  - TAGLINE, BIO, endpoint rows, and data-email="" on the email row.
+  All visual layers are generated in code; no editing needed.
 -->
 
 <title>Patty — self-hosted human</title>
 <meta name="description" content="Developer. Runs a homelab. Reach me here.">
-<meta name="theme-color" content="#13151C">
+<meta name="theme-color" content="#120A15">
 
-<!-- Link preview when shared (iMessage, Slack, etc.) -->
 <meta property="og:type" content="website">
 <meta property="og:title" content="Patty — self-hosted human">
 <meta property="og:description" content="Developer. Runs a homelab. Reach me here.">
 <meta property="og:url" content="https://yourusername.github.io">
 <meta name="twitter:card" content="summary">
-<!-- Optional: drop an og.png (1200x630) in the repo and uncomment for a preview image
-<meta property="og:image" content="https://yourusername.github.io/og.png"> -->
 
-<!-- Inline favicon: copper ring + green status dot, no extra file needed -->
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2313151C'/%3E%3Ccircle cx='16' cy='16' r='6' fill='none' stroke='%23E8A33D' stroke-width='2'/%3E%3Ccircle cx='16' cy='16' r='2.4' fill='%234ADE80'/%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23120A15'/%3E%3Ccircle cx='16' cy='16' r='6' fill='none' stroke='%233BE0C8' stroke-width='2'/%3E%3Ccircle cx='16' cy='16' r='2.4' fill='%23FF4D8D'/%3E%3C/svg%3E">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 
 <style>
+  @property --a { syntax: "<angle>"; inherits: false; initial-value: 0deg; }
+
   :root{
-    --ink:#13151C;
-    --ink-deep:#0F1116;
-    --raised:#1A1D27;
-    --raised-hi:#232733;
-    --line:#2A2E3A;
-    --text:#E8EAF0;
-    --muted:#858C9E;
-    --accent:#E8A33D;   /* action / hover */
-    --up:#4ADE80;       /* live status only */
+    --bg:#120A15; --text:#F4EDE8; --muted:#A9989F; --line:#38272F;
+    --c1:#3BE0C8;   /* mint accent (status / sparks) */
+    --c2:#B061FF;   /* violet */
+    --c3:#FF4D8D;   /* rose */
+    --c4:#FF8A4C;   /* coral */
+    --gold:#FFC24B;
+    --grad: linear-gradient(100deg,var(--c4),var(--c3),var(--c2),var(--gold),var(--c4));
+    --conic: conic-gradient(from var(--a), var(--c4),var(--c3),var(--c2),var(--c1),var(--gold),var(--c4));
     --mono:'IBM Plex Mono', ui-monospace, monospace;
     --disp:'Bricolage Grotesque', system-ui, sans-serif;
   }
-
   *{box-sizing:border-box;margin:0;padding:0}
+  html,body{overflow-x:hidden}
+  body{position:relative;background:var(--bg);color:var(--text);font-family:var(--mono);-webkit-font-smoothing:antialiased}
+  body.sealed{overflow:hidden;height:100dvh}
 
-  body{
-    background:var(--ink);
-    color:var(--text);
-    font-family:var(--mono);
-    min-height:100dvh;
-    display:flex;align-items:center;justify-content:center;
-    padding:30px 20px;
-    -webkit-font-smoothing:antialiased;
-  }
+  /* ambient background */
+  .aurora{position:fixed;inset:-25%;z-index:0;pointer-events:none;filter:blur(74px) saturate(1.4);
+    background:
+      radial-gradient(38% 46% at 24% 30%, rgba(255,138,76,.5), transparent 60%),
+      radial-gradient(42% 52% at 80% 24%, rgba(176,97,255,.5), transparent 62%),
+      radial-gradient(46% 56% at 60% 82%, rgba(255,77,141,.5), transparent 60%),
+      radial-gradient(40% 52% at 14% 78%, rgba(255,194,75,.42), transparent 60%),
+      radial-gradient(30% 40% at 88% 70%, rgba(59,224,200,.28), transparent 60%);
+    animation:drift 24s ease-in-out infinite alternate}
+  @keyframes drift{from{transform:scale(1) translate(0,0)}to{transform:scale(1.16) translate(3%,-2%)}}
+  #net{position:fixed;inset:0;z-index:1;pointer-events:none}
+  .geo{position:fixed;top:50%;left:50%;width:min(600px,130vw);aspect-ratio:1;transform:translate(-50%,-50%);z-index:1;pointer-events:none;filter:drop-shadow(0 0 7px rgba(255,120,150,.35))}
+  .geo g{transform-origin:250px 250px}
+  .spin-a{animation:spin2 58s linear infinite}.spin-b{animation:spin2 40s linear infinite reverse}.spin-c{animation:spin2 26s linear infinite}
+  @keyframes spin2{to{transform:rotate(360deg)}}
 
-  .card{
-    width:100%;max-width:440px;
-    opacity:0;animation:rise .55s cubic-bezier(.2,.7,.2,1) forwards;
-  }
+  /* content is normal, fully scrollable flow — safe-centered so a tall card never clips */
+  .content{position:relative;z-index:2;display:flex;flex-direction:column;justify-content:safe center;align-items:center;min-height:100dvh;padding:40px 20px}
 
-  /* status eyebrow */
-  .status{
-    display:flex;align-items:center;gap:9px;
-    font-size:12px;letter-spacing:.13em;text-transform:uppercase;
-    color:var(--muted);margin-bottom:24px;
-  }
-  .dot{
-    width:8px;height:8px;border-radius:50%;background:var(--up);
-    box-shadow:0 0 0 0 rgba(74,222,128,.5);
-    animation:pulse 2.8s ease-out infinite;
-  }
+  .stage{position:relative;perspective:1200px;width:100%;max-width:440px}
+  .wrap{position:relative;border-radius:26px;transform:rotateX(var(--rx,0)) rotateY(var(--ry,0));transition:transform .2s ease-out;transform-style:preserve-3d}
+  .wrap::before{content:'';position:absolute;inset:-7px;border-radius:32px;z-index:0;background:var(--conic);filter:blur(18px);opacity:.8;animation:spin 7s linear infinite}
+  .wrap::after{content:'';position:absolute;inset:0;border-radius:26px;z-index:3;pointer-events:none;padding:1.5px;background:var(--conic);
+    -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;animation:spin 7s linear infinite}
+  @keyframes spin{to{--a:360deg}}
+  .card{position:relative;z-index:1;overflow:hidden;padding:34px 28px 26px;border-radius:26px;background:rgba(24,14,26,.72);
+    border:1px solid rgba(255,255,255,.08);-webkit-backdrop-filter:blur(16px) saturate(1.3);backdrop-filter:blur(16px) saturate(1.3);box-shadow:0 30px 90px -30px rgba(0,0,0,.85)}
+  .card::before{content:'';position:absolute;inset:0;z-index:0;pointer-events:none;background:radial-gradient(240px circle at var(--mx,50%) var(--my,50%), rgba(255,140,170,.18), transparent 55%)}
+  .card::after{content:'';position:absolute;top:0;left:-70%;width:55%;height:100%;z-index:0;pointer-events:none;background:linear-gradient(105deg,transparent,rgba(255,255,255,.12),transparent);transform:skewX(-18deg);animation:sweep 6.5s ease-in-out infinite}
+  @keyframes sweep{0%{left:-70%}45%{left:150%}100%{left:150%}}
+  .card>*{position:relative;z-index:1}
+
+  .status{display:flex;align-items:center;gap:9px;font-size:12px;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);margin-bottom:22px}
+  .dot{width:8px;height:8px;border-radius:50%;background:var(--c1);box-shadow:0 0 0 0 rgba(59,224,200,.5),0 0 12px rgba(59,224,200,.9);animation:pulse 2.6s ease-out infinite}
   .status .sep{opacity:.4}
+  .name{font-family:var(--disp);font-weight:800;font-size:clamp(42px,12.5vw,58px);letter-spacing:-.025em;line-height:.96;
+    background:var(--grad);background-size:300% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;
+    filter:drop-shadow(0 0 20px rgba(255,120,180,.4));animation:flow 8s linear infinite}
+  @keyframes flow{to{background-position:300% 0}}
+  .tagline{font-family:var(--disp);font-weight:600;font-size:18px;color:var(--c4);margin-top:9px;text-shadow:0 0 18px rgba(255,138,76,.5)}
+  .bio{font-size:13.5px;line-height:1.65;color:var(--muted);margin-top:16px;max-width:38ch}
 
-  /* identity */
-  .name{
-    font-family:var(--disp);font-weight:800;
-    font-size:clamp(40px,12vw,56px);letter-spacing:-.025em;line-height:.98;
-  }
-  .tagline{
-    font-family:var(--disp);font-weight:600;font-size:18px;
-    color:var(--accent);margin-top:9px;
-  }
-  .bio{
-    font-size:13.5px;line-height:1.65;color:var(--muted);
-    margin-top:16px;max-width:38ch;
-  }
-
-  /* primary action: save contact */
-  .save{
-    display:flex;align-items:center;justify-content:center;gap:10px;
-    width:100%;margin-top:24px;padding:15px;
-    font-family:var(--mono);font-size:14.5px;font-weight:600;
-    color:var(--accent);background:transparent;
-    border:1px solid var(--accent);border-radius:13px;cursor:pointer;
-    transition:background .16s ease,color .16s ease,transform .08s ease;
-  }
-  .save:hover{background:var(--accent);color:#1a1305}
+  .save{position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;gap:10px;width:100%;margin-top:24px;padding:16px;
+    font-family:var(--mono);font-size:14.5px;font-weight:600;color:var(--c1);background:rgba(59,224,200,.06);border:1px solid rgba(59,224,200,.5);border-radius:13px;cursor:pointer;
+    box-shadow:0 0 26px -8px rgba(59,224,200,.5);transition:color .16s,transform .08s,box-shadow .2s,background .16s}
+  .save::after{content:'';position:absolute;top:0;left:-70%;width:55%;height:100%;background:linear-gradient(105deg,transparent,rgba(255,255,255,.25),transparent);transform:skewX(-18deg);animation:sweep 4.5s ease-in-out infinite}
+  .save:hover{color:#06201b;background:var(--c1);box-shadow:0 0 40px -6px rgba(59,224,200,.75)}
   .save:active{transform:scale(.985)}
-  .save:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
-  .save.done{border-color:var(--up);color:var(--up);background:transparent}
-  .save svg{width:16px;height:16px}
+  .save:focus-visible{outline:2px solid var(--c1);outline-offset:3px}
+  .save.done{color:var(--c1);border-color:var(--c1);background:rgba(59,224,200,.06);box-shadow:0 0 40px -8px rgba(59,224,200,.7)}
+  .save svg{width:16px;height:16px;position:relative;z-index:1}.save span{position:relative;z-index:1}
 
-  /* endpoints */
-  .label{
-    font-size:11px;letter-spacing:.22em;text-transform:uppercase;
-    color:var(--muted);margin:30px 0 10px;
-  }
-  .panel{
-    border:1px solid var(--line);border-radius:14px;
-    background:var(--raised);overflow:hidden;
-  }
-  .row{
-    display:flex;align-items:center;gap:14px;
-    padding:16px 18px;text-decoration:none;color:var(--text);
-    border-bottom:1px solid var(--line);
-    transition:background .15s ease;cursor:pointer;
-    width:100%;text-align:left;font-family:var(--mono);font-size:14.5px;background:none;
-  }
+  .label{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);margin:28px 0 10px}
+  .panel{border:1px solid var(--line);border-radius:14px;background:rgba(28,18,30,.5);overflow:hidden}
+  .row{display:flex;align-items:center;gap:14px;padding:16px 18px;text-decoration:none;color:var(--text);border-bottom:1px solid var(--line);cursor:pointer;width:100%;text-align:left;font-family:var(--mono);font-size:14.5px;background:none;transition:background .15s,box-shadow .2s}
   .row:last-child{border-bottom:none}
-  .arrow{color:var(--muted);transition:transform .15s ease,color .15s ease}
-  .key{font-weight:500}
-  .val{margin-left:auto;font-size:13px;color:var(--muted);transition:color .15s ease}
-  .row:hover,.row:focus-visible{background:var(--raised-hi);outline:none}
-  .row:hover .arrow,.row:focus-visible .arrow{color:var(--accent);transform:translateX(3px)}
-  .row:focus-visible{box-shadow:inset 0 0 0 2px var(--accent)}
-  .row.copied .val{color:var(--up)}
+  .arrow{color:var(--muted);transition:transform .15s,color .15s}.key{font-weight:500}
+  .val{margin-left:auto;font-size:13px;color:var(--muted);transition:color .15s}
+  .row:hover,.row:focus-visible{background:rgba(176,97,255,.14);outline:none;box-shadow:inset 3px 0 0 var(--c2)}
+  .row:hover .arrow,.row:focus-visible .arrow{color:var(--c3);transform:translateX(3px)}
+  .row:focus-visible{box-shadow:inset 0 0 0 2px var(--c3)}
+  .row.copied .val{color:var(--c1)}
+  .foot{margin-top:22px;font-size:11.5px;letter-spacing:.04em;color:var(--muted);opacity:.6}
 
-  .foot{
-    margin-top:24px;font-size:11.5px;letter-spacing:.04em;
-    color:var(--muted);opacity:.65;
-  }
+  .reveal{animation:rise .6s cubic-bezier(.2,.7,.2,1) both;animation-delay:var(--d,0s)}
+  @keyframes rise{from{opacity:0;transform:translateY(16px) scale(.98);filter:blur(6px)}to{opacity:1;transform:none;filter:blur(0)}}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(59,224,200,.5),0 0 12px rgba(59,224,200,.9)}70%{box-shadow:0 0 0 8px rgba(59,224,200,0),0 0 12px rgba(59,224,200,.9)}100%{box-shadow:0 0 0 0 rgba(59,224,200,0),0 0 12px rgba(59,224,200,.9)}}
 
-  @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
-  @keyframes pulse{
-    0%{box-shadow:0 0 0 0 rgba(74,222,128,.5)}
-    70%{box-shadow:0 0 0 7px rgba(74,222,128,0)}
-    100%{box-shadow:0 0 0 0 rgba(74,222,128,0)}
-  }
+  /* ── the seal (generated cover) ── */
+  .cover{position:fixed;inset:0;z-index:60;background:#0b060e;overflow:hidden;will-change:clip-path;cursor:pointer}
+  #coverfx{position:absolute;inset:0}
+  .cover-inner{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:16px;z-index:1;padding:24px}
+  .cover-kicker{font-family:var(--mono);font-size:12px;letter-spacing:.32em;text-transform:uppercase;color:var(--c1);opacity:.9;text-shadow:0 0 14px rgba(59,224,200,.7)}
+  .cover-title{font-family:var(--disp);font-weight:800;font-size:clamp(58px,20vw,120px);line-height:.9;letter-spacing:-.03em;
+    background:var(--grad);background-size:300% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;
+    filter:drop-shadow(0 0 28px rgba(255,120,180,.5));animation:flow 8s linear infinite}
+  .cover-hint{font-family:var(--mono);font-size:12.5px;letter-spacing:.14em;color:var(--muted);animation:bob 2.2s ease-in-out infinite}
+  @keyframes bob{0%,100%{transform:translateY(0);opacity:.7}50%{transform:translateY(5px);opacity:1}}
+  .tear{position:absolute;left:-2%;right:-2%;height:2px;top:0;z-index:2;pointer-events:none;
+    background:linear-gradient(90deg,transparent,var(--c4) 20%,var(--c3) 55%,var(--c2),var(--gold),transparent);
+    box-shadow:0 0 26px 5px rgba(255,77,141,.6),0 0 40px 10px rgba(176,97,255,.35);opacity:0}
+  body:not(.sealed) .cover{display:none}
+
   @media (prefers-reduced-motion: reduce){
-    .card{animation:none;opacity:1}
-    .dot{animation:none}
-    .row,.arrow,.save,.val{transition:none}
+    .aurora,.spin-a,.spin-b,.spin-c,.wrap::before,.wrap::after,.card::after,.save::after,.name,.dot,.reveal,.cover-title,.cover-hint{animation:none}
+    .wrap{transition:none}
   }
 </style>
 </head>
-<body>
-  <main class="card">
-    <div class="status">
-      <span class="dot" aria-hidden="true"></span>
-      <span>online</span>
-      <span class="sep">&middot;</span>
-      <!-- EDIT: a soft, true signal -- not a job ad -->
-      <span>open to interesting problems</span>
-    </div>
+<body class="sealed">
+  <div class="aurora" aria-hidden="true"></div>
+  <canvas id="net" aria-hidden="true"></canvas>
+  <svg class="geo" viewBox="0 0 500 500" fill="none" aria-hidden="true">
+    <g class="spin-a"><circle cx="250" cy="250" r="214" stroke="rgba(255,138,76,.32)" stroke-width="1" stroke-dasharray="2 12"/></g>
+    <g class="spin-b"><polygon points="400,250 325,379.9 175,379.9 100,250 175,120.1 325,120.1" stroke="rgba(176,97,255,.3)" stroke-width="1"/></g>
+    <g class="spin-a"><circle cx="250" cy="250" r="120" stroke="rgba(255,77,141,.28)" stroke-width="1"/></g>
+    <g class="spin-c"><polygon points="250,166 332,296 168,296" stroke="rgba(255,194,75,.3)" stroke-width="1"/></g>
+  </svg>
 
-    <!-- EDIT: your name (the Save button uses this) -->
-    <h1 class="name" id="name">Patty</h1>
-    <!-- EDIT: tagline -->
-    <p class="tagline">self-hosted human</p>
-    <!-- EDIT: 1-2 lines with some voice -->
-    <p class="bio">I build and run my own infrastructure &mdash; Proxmox, media, DNS, the works. Currently turning NFC tags into things that have no business being this fun.</p>
-
-    <button class="save" id="save" type="button">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
-      </svg>
-      <span id="save-label">Save contact</span>
-    </button>
-
-    <p class="label">Endpoints</p>
-    <nav class="panel">
-      <!-- EDIT each row: href + the two spans. Add or remove rows freely. -->
-      <a class="row" id="gh" href="https://github.com/yourusername">
-        <span class="arrow" aria-hidden="true">&rarr;</span>
-        <span class="key">github</span>
-        <span class="val">/yourusername</span>
-      </a>
-      <a class="row" href="https://your-portfolio.example">
-        <span class="arrow" aria-hidden="true">&rarr;</span>
-        <span class="key">projects</span>
-        <span class="val">what I build</span>
-      </a>
-      <a class="row" href="https://www.linkedin.com/in/yourname">
-        <span class="arrow" aria-hidden="true">&rarr;</span>
-        <span class="key">linkedin</span>
-        <span class="val">/in/yourname</span>
-      </a>
-      <!-- email row taps to COPY. EDIT data-email + the value span. -->
-      <button class="row" id="email" type="button" data-email="you@example.com">
-        <span class="arrow" aria-hidden="true">&rarr;</span>
-        <span class="key">email</span>
-        <span class="val">tap to copy</span>
-      </button>
-    </nav>
-
-    <p class="foot">served from github pages &middot; 2026</p>
+  <main class="content">
+    <div class="stage"><div class="wrap" id="wrap">
+      <main class="card" id="card">
+        <div class="status reveal" style="--d:0s"><span class="dot" aria-hidden="true"></span><span>online</span><span class="sep">&middot;</span><span>open to interesting problems</span></div>
+        <!-- EDIT: name (must match .cover-title) -->
+        <h1 class="name reveal" id="name" style="--d:.06s">Patty</h1>
+        <p class="tagline reveal" style="--d:.12s">self-hosted human</p>
+        <p class="bio reveal" style="--d:.18s">I build and run my own infrastructure &mdash; Proxmox, media, DNS, the works. Currently turning NFC tags into things that have no business being this fun.</p>
+        <button class="save reveal" id="save" type="button" style="--d:.24s">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          <span id="save-label">Save contact</span>
+        </button>
+        <p class="label reveal" style="--d:.30s">Endpoints</p>
+        <nav class="panel reveal" style="--d:.36s">
+          <a class="row" id="gh" href="https://github.com/yourusername"><span class="arrow" aria-hidden="true">&rarr;</span><span class="key">github</span><span class="val">/yourusername</span></a>
+          <a class="row" href="https://your-portfolio.example"><span class="arrow" aria-hidden="true">&rarr;</span><span class="key">projects</span><span class="val">what I build</span></a>
+          <a class="row" href="https://www.linkedin.com/in/yourname"><span class="arrow" aria-hidden="true">&rarr;</span><span class="key">linkedin</span><span class="val">/in/yourname</span></a>
+          <button class="row" id="email" type="button" data-email="you@example.com"><span class="arrow" aria-hidden="true">&rarr;</span><span class="key">email</span><span class="val">tap to copy</span></button>
+        </nav>
+        <p class="foot reveal" style="--d:.42s">served from github pages &middot; 2026</p>
+      </main>
+    </div></div>
   </main>
 
+  <div class="cover" id="cover" role="button" aria-label="Swipe or tap to reveal">
+    <canvas id="coverfx"></canvas>
+    <div class="cover-inner">
+      <div class="cover-kicker">// system sealed</div>
+      <!-- EDIT: must match the name above -->
+      <h1 class="cover-title">Patty</h1>
+      <div class="cover-hint">swipe or tap to break the seal &darr;</div>
+    </div>
+    <div class="tear" id="tear"></div>
+  </div>
+
 <script>
-  // -- Save contact: builds a vCard from what's already on the page --
-  document.getElementById('save').addEventListener('click', () => {
-    const name = document.getElementById('name').textContent.trim();
-    const email = document.getElementById('email').dataset.email;
-    const gh = document.getElementById('gh').getAttribute('href');
-    const url = window.location.href;
+let P = 0;                       // reveal progress 0..1 (read by the cover scene)
+const REDUCE = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const PAL = [[255,138,76],[255,77,141],[176,97,255],[255,194,75],[59,224,200]];  // coral, rose, violet, gold, mint
 
-    const vcard = [
-      'BEGIN:VCARD','VERSION:3.0',
-      'FN:' + name,
-      'EMAIL;TYPE=INTERNET:' + email,
-      'URL:' + url,
-      'X-SOCIALPROFILE;TYPE=github:' + gh,
-      'END:VCARD'
-    ].join('\r\n');
+/* ── Generated cover scene ── */
+(() => {
+  const cv=document.getElementById('coverfx'), ctx=cv.getContext('2d');
+  let W,H,dpr,dots=[],embers=[],raf=0,grid=0,ei=0;
+  function size(){ dpr=Math.min(devicePixelRatio||1,2); W=innerWidth;H=innerHeight; cv.width=W*dpr;cv.height=H*dpr; ctx.setTransform(dpr,0,0,dpr,0,0); }
+  function init(){ const n=innerWidth<520?22:34; dots=Array.from({length:n},(_,i)=>({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3,r:Math.random()*1.8+1,ph:Math.random()*6.28,col:PAL[i%PAL.length]})); }
+  function frame(t){
+    raf=requestAnimationFrame(frame);
+    if(P>=0.995){ ctx.clearRect(0,0,W,H); return; }
+    ctx.clearRect(0,0,W,H); grid=(grid+0.25)%48;
+    ctx.lineWidth=1;
+    for(let x=-48+grid;x<W;x+=48){ ctx.strokeStyle='rgba(176,97,255,.05)'; ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke(); }
+    for(let y=-48+grid;y<H;y+=48){ ctx.strokeStyle='rgba(255,138,76,.05)'; ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke(); }
+    for(let i=0;i<dots.length;i++){ const a=dots[i]; a.x+=a.vx;a.y+=a.vy;
+      if(a.x<-20)a.x=W+20;else if(a.x>W+20)a.x=-20; if(a.y<-20)a.y=H+20;else if(a.y>H+20)a.y=-20;
+      for(let j=i+1;j<dots.length;j++){ const b=dots[j],d=Math.hypot(a.x-b.x,a.y-b.y); if(d<170){ const c=a.col; ctx.strokeStyle=`rgba(${c[0]},${c[1]},${c[2]},${(1-d/170)*.3})`; ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke(); } } }
+    for(const a of dots){ const r=a.r+Math.sin(t/600+a.ph)*.8,c=a.col; ctx.fillStyle=`rgba(${c[0]},${c[1]},${c[2]},.95)`; ctx.shadowColor=ctx.fillStyle; ctx.shadowBlur=12; ctx.beginPath();ctx.arc(a.x,a.y,Math.max(.6,r),0,6.28);ctx.fill(); }
+    ctx.shadowBlur=0;
+    const edge=(1-P)*H;
+    if(P>0.002 && embers.length<40 && Math.random()<0.9){ embers.push({x:Math.random()*W,y:edge+Math.random()*8,vy:-(Math.random()*1.4+.6),a:1,r:Math.random()*1.6+.6,col:PAL[(ei++)%PAL.length]}); }
+    for(let k=embers.length-1;k>=0;k--){ const e=embers[k]; e.y+=e.vy;e.a-=.02; if(e.a<=0){embers.splice(k,1);continue;} ctx.fillStyle=`rgba(${e.col[0]},${e.col[1]},${e.col[2]},${e.a})`; ctx.shadowColor=ctx.fillStyle;ctx.shadowBlur=10; ctx.beginPath();ctx.arc(e.x,e.y,e.r,0,6.28);ctx.fill(); }
+    ctx.shadowBlur=0;
+    const g=ctx.createRadialGradient(W/2,H/2,Math.min(W,H)*.3,W/2,H/2,Math.max(W,H)*.7); g.addColorStop(0,'rgba(0,0,0,0)'); g.addColorStop(1,'rgba(8,4,12,.85)'); ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
+  }
+  size(); init();
+  if(!REDUCE) raf=requestAnimationFrame(frame);
+  let rt; addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(()=>{size();init();},200);});
+})();
 
-    const blob = new Blob([vcard], {type:'text/vcard'});
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = name.replace(/\s+/g,'-').toLowerCase() + '.vcf';
-    document.body.appendChild(a); a.click(); a.remove();
+/* ── Seal: one-shot tear on swipe/tap, then a normal scrollable page ── */
+(() => {
+  const cover=document.getElementById('cover'), tear=document.getElementById('tear');
+  const N=16, jit=[]; for(let i=0;i<=N;i++){ jit[i]=(Math.random()*4-2); if(i%5===0) jit[i]-=Math.random()*3.5; }
+  function clipFor(p){ const y=(1-p)*112-6; let s=`0% 0%, 100% 0%, 100% ${(y+jit[0]).toFixed(2)}%`;
+    for(let i=1;i<=N;i++){ s+=`, ${(100-i/N*100).toFixed(2)}% ${(y+jit[i]).toFixed(2)}%`; } return `polygon(${s})`; }
 
-    const btn = document.getElementById('save');
-    document.getElementById('save-label').textContent = 'Contact ready';
-    btn.classList.add('done');
-    setTimeout(() => {
-      document.getElementById('save-label').textContent = 'Save contact';
-      btn.classList.remove('done');
-    }, 2200);
-  });
+  if(REDUCE){ document.body.classList.remove('sealed'); cover.style.display='none'; startNet(); return; }
 
-  // -- Email: tap to copy with confirmation --
-  document.getElementById('email').addEventListener('click', async () => {
-    const row = document.getElementById('email');
-    const val = row.querySelector('.val');
-    const email = row.dataset.email;
-    try { await navigator.clipboard.writeText(email); }
-    catch { window.location.href = 'mailto:' + email; return; }
-    const original = val.textContent;
-    val.textContent = 'copied'; row.classList.add('copied');
-    setTimeout(() => { val.textContent = original; row.classList.remove('copied'); }, 1600);
-  });
+  let opened=false;
+  function openSeal(){
+    if(opened) return; opened=true;
+    const dur=1050, t0=performance.now();
+    (function anim(t){
+      const k=Math.min(1,(t-t0)/dur), p=1-Math.pow(1-k,3);
+      P=p; cover.style.clipPath=clipFor(p); tear.style.top=(((1-p)*112-6))+'%'; tear.style.opacity=(p>0.02&&p<0.98)?'1':'0';
+      if(k<1){ requestAnimationFrame(anim); }
+      else{ cover.style.display='none'; cover.style.pointerEvents='none'; document.body.classList.remove('sealed'); startNet(); }
+    })(t0);
+  }
+  cover.style.clipPath=clipFor(0);
+  ['wheel','touchmove','keydown'].forEach(ev=>addEventListener(ev,openSeal,{passive:true}));
+  cover.addEventListener('click',openSeal);
+})();
+
+/* ── Background particle field (starts when the seal breaks) ── */
+let startNet = () => {};
+(() => {
+  const canvas=document.getElementById('net'), ctx=canvas.getContext('2d');
+  const fine=matchMedia('(pointer: fine)').matches;
+  let W,H,dpr,nodes=[],ripples=[],raf=0,ptr=null,running=false,ri=0;
+  function size(){ dpr=Math.min(devicePixelRatio||1,2); W=innerWidth;H=innerHeight; canvas.width=W*dpr;canvas.height=H*dpr; ctx.setTransform(dpr,0,0,dpr,0,0); }
+  function init(){ const n=innerWidth<520?24:40; nodes=Array.from({length:n},(_,i)=>({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.4,vy:(Math.random()-.5)*.4,base:Math.random()*1.6+1,ph:Math.random()*6.28,col:PAL[i%PAL.length]})); }
+  function draw(t){
+    ctx.clearRect(0,0,W,H); const L=150;
+    for(let i=0;i<nodes.length;i++){ const a=nodes[i];
+      for(let j=i+1;j<nodes.length;j++){ const b=nodes[j],d=Math.hypot(a.x-b.x,a.y-b.y); if(d<L){ const c=a.col; ctx.strokeStyle=`rgba(${c[0]},${c[1]},${c[2]},${(1-d/L)*.32})`;ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke(); } }
+      if(ptr){ const d=Math.hypot(a.x-ptr.x,a.y-ptr.y); if(d<200){ const c=a.col; ctx.strokeStyle=`rgba(${c[0]},${c[1]},${c[2]},${(1-d/200)*.5})`;ctx.lineWidth=1.2;ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(ptr.x,ptr.y);ctx.stroke(); } } }
+    for(const n of nodes){ const r=n.base+Math.sin((t||0)/600+n.ph)*.7,c=n.col; ctx.fillStyle=`rgba(${c[0]},${c[1]},${c[2]},.95)`;ctx.shadowColor=ctx.fillStyle;ctx.shadowBlur=12;ctx.beginPath();ctx.arc(n.x,n.y,Math.max(.6,r),0,6.28);ctx.fill(); }
+    ctx.shadowBlur=0;
+    for(let k=ripples.length-1;k>=0;k--){ const rp=ripples[k];rp.r+=4;rp.a-=.02; if(rp.a<=0){ripples.splice(k,1);continue;} const c=rp.col; ctx.strokeStyle=`rgba(${c[0]},${c[1]},${c[2]},${rp.a})`;ctx.lineWidth=2;ctx.beginPath();ctx.arc(rp.x,rp.y,rp.r,0,6.28);ctx.stroke(); }
+  }
+  function step(t){ raf=requestAnimationFrame(step);
+    for(const n of nodes){ if(ptr){ const dx=n.x-ptr.x,dy=n.y-ptr.y,d=Math.hypot(dx,dy); if(d<160&&d>.1){ const f=(1-d/160)*.12; n.vx+=dx/d*f;n.vy+=dy/d*f; } } n.vx*=.985;n.vy*=.985;n.x+=n.vx;n.y+=n.vy; if(n.x<-20)n.x=W+20;else if(n.x>W+20)n.x=-20; if(n.y<-20)n.y=H+20;else if(n.y>H+20)n.y=-20; }
+    draw(t);
+  }
+  function go(){ cancelAnimationFrame(raf); raf=requestAnimationFrame(step); }
+  startNet=function(){ if(running||REDUCE) return; running=true; size(); init(); go();
+    document.addEventListener('visibilitychange',()=>{ if(document.hidden)cancelAnimationFrame(raf); else go(); });
+    if(fine){ addEventListener('mousemove',e=>{ptr={x:e.clientX,y:e.clientY};}); addEventListener('mouseleave',()=>{ptr=null;}); }
+    addEventListener('click',e=>{ if(!document.body.classList.contains('sealed')) ripples.push({x:e.clientX,y:e.clientY,r:2,a:.7,col:PAL[(ri++)%PAL.length]}); });
+  };
+  if(REDUCE){ startNet=function(){ size();init();draw(0); }; }
+  let rt; addEventListener('resize',()=>{ if(!running)return; clearTimeout(rt);rt=setTimeout(()=>{size();init();},200); });
+})();
+
+/* ── 3D tilt + cursor spotlight ── */
+(() => {
+  if(REDUCE) return;
+  const wrap=document.getElementById('wrap'), card=document.getElementById('card');
+  function move(x,y){ const r=card.getBoundingClientRect(); if(!r.width) return; const px=(x-r.left)/r.width, py=(y-r.top)/r.height;
+    wrap.style.setProperty('--ry',((px-.5)*10).toFixed(2)+'deg'); wrap.style.setProperty('--rx',((.5-py)*10).toFixed(2)+'deg');
+    card.style.setProperty('--mx',(px*100).toFixed(1)+'%'); card.style.setProperty('--my',(py*100).toFixed(1)+'%'); }
+  function reset(){ wrap.style.setProperty('--rx','0deg'); wrap.style.setProperty('--ry','0deg'); }
+  addEventListener('mousemove',e=>move(e.clientX,e.clientY)); addEventListener('mouseleave',reset);
+  card.addEventListener('touchmove',e=>{const p=e.touches[0];if(p)move(p.clientX,p.clientY);},{passive:true}); card.addEventListener('touchend',reset);
+})();
+
+/* ── Save contact vCard ── */
+document.getElementById('save').addEventListener('click',()=>{
+  const name=document.getElementById('name').textContent.trim(), email=document.getElementById('email').dataset.email, gh=document.getElementById('gh').getAttribute('href'), url=location.href;
+  const v=['BEGIN:VCARD','VERSION:3.0','FN:'+name,'EMAIL;TYPE=INTERNET:'+email,'URL:'+url,'X-SOCIALPROFILE;TYPE=github:'+gh,'END:VCARD'].join('\r\n');
+  const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([v],{type:'text/vcard'})); a.download=name.replace(/\s+/g,'-').toLowerCase()+'.vcf';
+  document.body.appendChild(a);a.click();a.remove();
+  const b=document.getElementById('save'); document.getElementById('save-label').textContent='Contact ready'; b.classList.add('done');
+  setTimeout(()=>{document.getElementById('save-label').textContent='Save contact';b.classList.remove('done');},2200);
+});
+/* ── Email tap-to-copy ── */
+document.getElementById('email').addEventListener('click',async()=>{
+  const row=document.getElementById('email'),val=row.querySelector('.val'),email=row.dataset.email;
+  try{ await navigator.clipboard.writeText(email); }catch{ location.href='mailto:'+email; return; }
+  const o=val.textContent; val.textContent='copied'; row.classList.add('copied'); setTimeout(()=>{val.textContent=o;row.classList.remove('copied');},1600);
+});
 </script>
 </body>
 </html>

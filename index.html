@@ -247,7 +247,6 @@ function scramble(el, dur){
 /* ── boot sequence ── */
 (() => {
   const boot = document.getElementById('boot');
-  if(REDUCE){ boot.remove(); bootDone = true; return; }
   const lines = [
     ['btxt','patty-os v5.0 — boot'],
     ['bok','[ OK ] mount /dev/identity'],
@@ -264,6 +263,13 @@ function scramble(el, dur){
     setTimeout(() => boot.remove(), 350);
     scramble(document.getElementById('ctitle'), 600);
   }
+  boot.addEventListener('click', fin);
+  if(REDUCE){
+    // reduced motion: print the whole boot at once (no per-line motion), hold, then reveal
+    lines.forEach(item=>{ const d=document.createElement('div'); d.className=item[0]; d.textContent=item[1]; boot.appendChild(d); });
+    setTimeout(fin, 900);
+    return;
+  }
   function next(){
     if(bootDone) return;
     if(i >= lines.length){ setTimeout(fin, 320); return; }
@@ -271,7 +277,6 @@ function scramble(el, dur){
     d.className = item[0]; d.textContent = item[1]; boot.appendChild(d);
     setTimeout(next, 165);
   }
-  boot.addEventListener('click', fin);
   next();
 })();
 
@@ -415,8 +420,9 @@ void main(){
     for(let i=1;i<=N;i++){ s+=`, ${(100-i/N*100).toFixed(2)}% ${(y+jit[i]).toFixed(2)}%`; } return `polygon(${s})`; }
 
   if(REDUCE){
+    // no tear (heavy motion), but the boot still plays and the card is revealed under it
     document.body.classList.remove('sealed'); cover.style.display='none';
-    bootDone=true; sealOpen=true; startNet(); return;
+    sealOpen=true; startNet(); return;
   }
 
   function openSeal(){
